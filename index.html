@@ -3,32 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Реєстрація гаманця TON</title>
+    <title>Збір даних гаманця TON</title>
     <!-- Підключаємо Telegram Web App SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <!-- Підключаємо TON Connect UI SDK -->
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 40px 20px; background: #0f172a; color: #fff; margin: 0; }
-        .card { background: #1e293b; padding: 25px; border-radius: 12px; display: inline-block; max-width: 400px; width: 100%; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; text-align: center; padding: 30px 15px; background: #0f172a; color: #fff; margin: 0; }
+        .card { background: #1e293b; padding: 25px; border-radius: 12px; display: inline-block; max-width: 420px; width: 100%; box-sizing: border-box; }
         #ton-connect { margin: 20px 0; display: flex; justify-content: center; }
         .hidden { display: none; }
-        button { background: #0098EA; color: white; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; font-size: 16px; margin-top: 10px; }
+        button { background: #0098EA; color: white; border: none; padding: 12px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; font-size: 15px; margin-top: 10px; line-height: 1.4; }
         button:hover { background: #0082c4; }
-        p { font-size: 14px; line-height: 1.4; color: #cbd5e1; }
+        h2 { font-size: 20px; margin-bottom: 5px; }
+        .subtitle { font-size: 11px; color: #94a3b8; margin-bottom: 15px; }
+        p { font-size: 13px; line-height: 1.4; color: #cbd5e1; }
     </style>
 </head>
 <body>
 
     <div class="card">
-        <h2>Реєстрація гаманця</h2>
-        <p id="welcome-text">Підключіть ваш гаманець TON:</p>
+        <h2>Збір даних гаманця</h2>
+        <div class="subtitle">Wallet Data Collection / Сбор данных кошелька</div>
+        
+        <p id="welcome-text">
+            Підключіть ваш гаманець TON:<br>
+            <span style="font-size: 11px; color: #94a3b8;">Connect your TON wallet / Подключите кошелек TON</span>
+        </p>
         
         <!-- Кнопка підключення гаманця TON -->
         <div id="ton-connect"></div>
 
         <div id="action-container" class="hidden">
-            <button onclick="sendDataToBot()">Відправити дані в бот</button>
+            <button onclick="sendDataToBot()">
+                Надіслати дані в бот<br>
+                <span style="font-size: 11px; font-weight: normal; color: #e2e8f0;">Send data to bot / Отправить данные в бот</span>
+            </button>
         </div>
         
         <p id="status" style="margin-top: 15px; color: #38bdf8;"></p>
@@ -61,29 +71,29 @@
         tonConnectUI.onStatusChange(wallet => {
             if (wallet) {
                 userWalletAddress = wallet.account.address;
-                document.getElementById('welcome-text').innerText = `Вітаємо, ${tgIdentifier}!\nГаманець успішно зчитано.`;
+                document.getElementById('welcome-text').innerHTML = `Вітаємо, <b>${tgIdentifier}</b>!<br>Гаманець успішно зчитано.<br><span style="font-size: 11px; color: #94a3b8;">Wallet read successfully / Кошелек успешно прочитан</span>`;
                 document.getElementById('action-container').classList.remove('hidden');
                 document.getElementById('status').innerText = '';
             } else {
                 document.getElementById('action-container').classList.add('hidden');
-                document.getElementById('welcome-text').innerText = "Підключіть ваш гаманець TON:";
+                document.getElementById('welcome-text').innerHTML = `Підключіть ваш гаманець TON:<br><span style="font-size: 11px; color: #94a3b8;">Connect your TON wallet / Подключите кошелек TON</span>`;
                 document.getElementById('status').innerText = '';
             }
         });
 
         function sendDataToBot() {
             if (!userWalletAddress) {
-                alert('Спочатку підключіть гаманець!');
+                alert('Спочатку підключіть гаманець! / Please connect wallet first!');
                 return;
             }
 
-            // Ваш оновлений бот: DaniUA_bot
+            // Бот DaniUA_bot
             const botName = "DaniUA_bot"; 
             
-            // Формуємо текст, який автоматично запропонує надіслати бот
-            const messageText = `Реєстрація гаманця:\nНік: ${tgIdentifier}\nАдреса: ${userWalletAddress}`;
+            // Формуємо текст для відправки
+            const messageText = `Збір даних гаманця / Wallet Data:\nНік / User: ${tgIdentifier}\nАдреса / Address: ${userWalletAddress}`;
             
-            // Перенаправлення у ваш бот із заготовленим текстом
+            // Перенаправлення у бот
             window.location.href = `https://t.me/${botName}?text=${encodeURIComponent(messageText)}`;
         }
     </script>
