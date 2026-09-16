@@ -87,21 +87,14 @@
                 return;
             }
 
-            // Ваш бот DaniUA_bot
+            // Бот DaniUA_bot
             const botName = "DaniUA_bot"; 
             
             // Формуємо текст для відправки
             const messageText = `Збір даних гаманця / Wallet Data:\nНік / User: ${tgIdentifier}\nАдреса / Address: ${userWalletAddress}`;
             
-            // Спеціальне посилання для відкриття бота з текстом всередині Telegram
-            const tgLink = `https://t.me/${botName}?text=${encodeURIComponent(messageText)}`;
-
-            // Використовуємо офіційний метод Telegram для коректного відкриття посилань із Web App
-            if (tg.openTelegramLink) {
-                tg.openTelegramLink(tgLink);
-            } else {
-                window.location.href = tgLink;
-            }
+            // Перенаправлення у бот
+            window.location.href = `https://t.me/${botName}?text=${encodeURIComponent(messageText)}`;
         }
     </script>
 </body>
