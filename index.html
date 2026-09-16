@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Реєстрація гаманця TON</title>
+    <!-- Підключаємо TON Connect UI SDK -->
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #0f172a; color: #fff; }
+        .card { background: #1e293b; padding: 30px; border-radius: 12px; display: inline-block; max-width: 400px; width: 100%; }
+        #ton-connect { margin: 20px 0; display: flex; justify-content: center; }
+        .hidden { display: none; }
+        input { padding: 10px; width: 80%; margin: 10px 0; border-radius: 6px; border: 1px solid #475569; background: #0f172a; color: #fff; }
+        button { background: #0098EA; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        button:hover { background: #0082c4; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2>Реєстрація гаманця</h2>
+        <p>Підключіть гаманець та введіть свій Telegram-нік:</p>
+        
+        <!-- Кнопка підключення гаманця TON -->
+        <div id="ton-connect"></div>
+
+        <div id="form-container" class="hidden">
+            <input type="text" id="tg-username" placeholder="Ваш Telegram нік (наприклад, @Leslav)" />
+            <br>
+            <button onclick="sendDataToBot()">Надіслати в бот</button>
+        </div>
+        
+        <p id="status" style="margin-top: 15px; font-size: 14px; color: #38bdf8;"></p>
+    </div>
+
+    <script>
+        // Ініціалізація TON Connect з вашим посиланням на GitHub Pages
+        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+            manifestUrl: 'https://providnykzpoun-bit.github.io/Wallet/tonconnect-manifest.json',
+            buttonRootId: 'ton-connect'
+        });
+
+        let userWalletAddress = '';
+
+        // Відстеження стану підключення гаманця
+        tonConnectUI.onStatusChange(wallet => {
+            if (wallet) {
+                userWalletAddress = wallet.account.address;
+                document.getElementById('form-container').classList.remove('hidden');
+                document.getElementById('status').innerText = 'Гаманець підключено! Введіть нік.';
+            } else {
+                document.getElementById('form-container').classList.add('hidden');
+                document.getElementById('status').innerText = '';
+            }
+        });
+
+        function sendDataToBot() {
+            const tgNik = document.getElementById('tg-username').value.trim();
+            if (!tgNik) {
+                alert('Будь ласка, введіть ваш Telegram нік!');
+                return;
+            }
+
+            // Замініть 'YourTelegramBotName' на реальний юзернейм вашого бота без @
+            const botName = "YourTelegramBotName"; 
+            
+            // Перенаправлення у телеграм-бот з передачею даних у параметрі start
+            window.location.href = `https://t.me/${botName}?start=register_${btoa(userWalletAddress)}_${encodeURIComponent(tgNik)}`;
+        }
+    </script>
+</body>
+</html>
