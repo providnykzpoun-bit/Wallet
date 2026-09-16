@@ -4,37 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Реєстрація гаманця TON</title>
+    <!-- Підключаємо Telegram Web App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <!-- Підключаємо TON Connect UI SDK -->
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #0f172a; color: #fff; }
-        .card { background: #1e293b; padding: 30px; border-radius: 12px; display: inline-block; max-width: 400px; width: 100%; }
+        body { font-family: Arial, sans-serif; text-align: center; padding: 40px 20px; background: #0f172a; color: #fff; margin: 0; }
+        .card { background: #1e293b; padding: 25px; border-radius: 12px; display: inline-block; max-width: 400px; width: 100%; box-sizing: border-box; }
         #ton-connect { margin: 20px 0; display: flex; justify-content: center; }
         .hidden { display: none; }
-        input { padding: 10px; width: 80%; margin: 10px 0; border-radius: 6px; border: 1px solid #475569; background: #0f172a; color: #fff; }
-        button { background: #0098EA; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        button { background: #0098EA; color: white; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; font-size: 16px; margin-top: 10px; }
         button:hover { background: #0082c4; }
+        p { font-size: 14px; line-height: 1.4; color: #cbd5e1; }
     </style>
 </head>
 <body>
 
     <div class="card">
         <h2>Реєстрація гаманця</h2>
-        <p>Підключіть гаманець та введіть свій Telegram-нік:</p>
+        <p id="welcome-text">Підключіть ваш гаманець TON:</p>
         
         <!-- Кнопка підключення гаманця TON -->
         <div id="ton-connect"></div>
 
-        <div id="form-container" class="hidden">
-            <input type="text" id="tg-username" placeholder="Ваш Telegram нік (наприклад, @Leslav)" />
-            <br>
-            <button onclick="sendDataToBot()">Надіслати в бот</button>
+        <div id="action-container" class="hidden">
+            <button onclick="sendDataToBot()">Відправити дані в бот</button>
         </div>
         
-        <p id="status" style="margin-top: 15px; font-size: 14px; color: #38bdf8;"></p>
+        <p id="status" style="margin-top: 15px; color: #38bdf8;"></p>
     </div>
 
     <script>
+        // Ініціалізація Telegram Web App
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        // Автоматичне отримання ніка або імені з Telegram
+        let tgUser = tg.initDataUnsafe?.user;
+        let tgIdentifier = "";
+        
+        if (tgUser) {
+            tgIdentifier = tgUser.username ? `@${tgUser.username}` : (tgUser.first_name || `id_${tgUser.id}`);
+        } else {
+            tgIdentifier = "@web_user";
+        }
+
         // Ініціалізація TON Connect з вашим посиланням на GitHub Pages
         const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
             manifestUrl: 'https://providnykzpoun-bit.github.io/Wallet/tonconnect-manifest.json',
@@ -47,26 +61,30 @@
         tonConnectUI.onStatusChange(wallet => {
             if (wallet) {
                 userWalletAddress = wallet.account.address;
-                document.getElementById('form-container').classList.remove('hidden');
-                document.getElementById('status').innerText = 'Гаманець підключено! Введіть нік.';
+                document.getElementById('welcome-text').innerText = `Вітаємо, ${tgIdentifier}!\nГаманець успішно зчитано.`;
+                document.getElementById('action-container').classList.remove('hidden');
+                document.getElementById('status').innerText = '';
             } else {
-                document.getElementById('form-container').classList.add('hidden');
+                document.getElementById('action-container').classList.add('hidden');
+                document.getElementById('welcome-text').innerText = "Підключіть ваш гаманець TON:";
                 document.getElementById('status').innerText = '';
             }
         });
 
         function sendDataToBot() {
-            const tgNik = document.getElementById('tg-username').value.trim();
-            if (!tgNik) {
-                alert('Будь ласка, введіть ваш Telegram нік!');
+            if (!userWalletAddress) {
+                alert('Спочатку підключіть гаманець!');
                 return;
             }
 
-            // Замініть 'YourTelegramBotName' на реальний юзернейм вашого бота без @
-            const botName = "YourTelegramBotName"; 
+            // Ваш бот: ReklamaPRua_bot
+            const botName = "ReklamaPRua_bot"; 
             
-            // Перенаправлення у телеграм-бот з передачею даних у параметрі start
-            window.location.href = `https://t.me/${botName}?start=register_${btoa(userWalletAddress)}_${encodeURIComponent(tgNik)}`;
+            // Формуємо текст, який автоматично запропонує надіслати бот
+            const messageText = `Реєстрація гаманця:\nНік: ${tgIdentifier}\nАдреса: ${userWalletAddress}`;
+            
+            // Перенаправлення у ваш бот із заготовленим текстом (або параметром start)
+            window.location.href = `https://t.me/${botName}?text=${encodeURIComponent(messageText)}`;
         }
     </script>
 </body>
