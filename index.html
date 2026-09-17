@@ -32,6 +32,13 @@
         .ad-title { font-size: 10px; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 1px; }
         .ad-content { font-size: 12px; font-weight: bold; color: #38bdf8; text-decoration: none; display: block; }
         .ad-desc { font-size: 11px; color: #cbd5e1; margin-top: 3px; }
+
+        /* Блок плеєра Радіо Удвох */
+        .radio-container { margin-top: 10px; background: linear-gradient(135deg, #1e1b4b, #312e81); border: 1px solid #6366f1; border-radius: 8px; padding: 10px; text-align: center; cursor: pointer; position: relative; overflow: hidden; transition: transform 0.2s, border-color 0.3s; }
+        .radio-container:hover { border-color: #818cf8; transform: scale(1.01); }
+        .radio-title { font-size: 10px; color: #a5b4fc; text-transform: uppercase; margin-bottom: 3px; letter-spacing: 1px; font-weight: bold; }
+        .radio-content { font-size: 12px; font-weight: bold; color: #f43f5e; display: block; }
+        .radio-desc { font-size: 11px; color: #e2e8f0; margin-top: 2px; }
     </style>
 </head>
 <body>
@@ -65,11 +72,18 @@
             ℹ️ <b>Про сервіс:</b> Цей міні-додаток створено для безпечної реєстрації та збору адрес гаманців для майбутніх аірдропів у мережі TON. Дані захищені та не передаються третім особам.
         </div>
 
-        <!-- Блок ротації реклами (Слайдер) -->
+        <!-- Блок ротації реклами (Слайдер проєктів) -->
         <div class="ad-container" onclick="openCurrentAd()">
             <div class="ad-title" id="t-ad-header">📢 Рекомендовані проєкти / Партнери</div>
             <div class="ad-content" id="ad-title-text">Завантаження реклами...</div>
             <div class="ad-desc" id="ad-desc-text">Натисніть, щоб переглянути</div>
+        </div>
+
+        <!-- Блок / Кнопка стрімінгу Радіо Удвох -->
+        <div class="radio-container" onclick="openRadioStream()">
+            <div class="radio-title" id="t-radio-header">🎧 Онлайн стрімінг</div>
+            <div class="radio-content">🎵 Радіо Удвох (Наживо)</div>
+            <div class="radio-desc" id="t-radio-desc">Натисніть, щоб слухати трансляцію</div>
         </div>
         
         <p id="status" style="margin-top: 8px; color: #38bdf8; font-size: 11px;"></p>
@@ -79,7 +93,7 @@
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        // Повний вбудований список ваших проєктів для ротації
+        // Список ваших проєктів для ротації першого блоку
         const adsList = [
             { title: "😎 Ecosistem", desc: "Слідкуйте за новими можливостями та сервісами.", url: "https://t.me/Uatetriss_bot" },
             { title: "😎 UA mining", desc: "Запускайте майнінг улюблених активів у Telegram.", url: "https://t.me/Uapay_bot" },
@@ -105,12 +119,21 @@
         function openCurrentAd() {
             if (adsList && adsList.length > 0) {
                 const ad = adsList[currentAdIndex];
-                // Відкриваємо посилання на бота в Telegram
-                if (tg.openTelegramLink) {
-                    tg.openTelegramLink(ad.url);
+                if (tg.openLink) {
+                    tg.openLink(ad.url);
                 } else {
                     window.open(ad.url, '_blank');
                 }
+            }
+        }
+
+        // Функція відкриття прямого посилання на стрімінговий поток радіо
+        function openRadioStream() {
+            const radioUrl = "https://listen4.myradio24.com/78073";
+            if (tg.openLink) {
+                tg.openLink(radioUrl);
+            } else {
+                window.open(radioUrl, '_blank');
             }
         }
 
@@ -120,66 +143,65 @@
             updateAdBanner();
         }, 4500);
 
-        // Одразу запускаємо відображення першого елемента
         updateAdBanner();
 
-        // Переклади мов
+        // Мультимовні переклади
         const translations = {
             uk: {
                 title: "Збір даних гаманця", subtitle: "Безпечна реєстрація в системі",
                 connectText: "Підключіть ваш гаманець TON для початку роботи:", connectSub: "Connect your TON wallet to start",
                 successText: "Гаманець успішно зчитано.", actionHint: "Натисніть синю кнопку внизу екрана для відправки даних!",
                 infobox: "ℹ️ <b>Про сервіс:</b> Цей міні-додаток створено для безпечної реєстрації та збору адрес гаманців для майбутніх аірдропів у мережі TON. Дані захищені та не передаються третім особам.",
-                adHeader: "📢 Рекомендовані проєкти / Партнери", mainBtn: "НАДІСЛАТИ ДАНІ В БОТ"
+                adHeader: "📢 Рекомендовані проєкти / Партнери", radioHeader: "🎧 Онлайн стрімінг", radioDesc: "Натисніть, щоб слухати трансляцію", mainBtn: "НАДІСЛАТИ ДАНІ В БОТ"
             },
             en: {
                 title: "Wallet Data Collection", subtitle: "Secure system registration",
                 connectText: "Connect your TON wallet to start:", connectSub: "Connect your TON wallet to start",
                 successText: "Wallet read successfully.", actionHint: "Click the blue button at the bottom to send data!",
                 infobox: "ℹ️ <b>About service:</b> This mini-app is designed for secure wallet address registration for future TON airdrops. Data is protected and not shared with third parties.",
-                adHeader: "📢 Featured Projects / Partners", mainBtn: "SEND DATA TO BOT"
+                adHeader: "📢 Featured Projects / Partners", radioHeader: "🎧 Online Streaming", radioDesc: "Click to listen to the broadcast", mainBtn: "SEND DATA TO BOT"
             },
             de: {
                 title: "Wallet-Datenerfassung", subtitle: "Sichere Systemregistrierung",
                 connectText: "Verbinden Sie Ihr TON-Wallet, um zu beginnen:", connectSub: "Connect your TON wallet to start",
                 successText: "Wallet erfolgreich gelesen.", actionHint: "Klicken Sie unten auf den blauen Button!",
                 infobox: "ℹ️ <b>Über den Dienst:</b> Diese Mini-App dient der sicheren Registrierung von Wallets für TON-Airdrops. Daten sind geschützt und werden nicht weitergegeben.",
-                adHeader: "📢 Empfohlene Projekte / Partner", mainBtn: "DATEN AN BOT SENDEN"
+                adHeader: "📢 Empfohlene Projekte / Partner", radioHeader: "🎧 Online-Streaming", radioDesc: "Klicken Sie, um die Sendung zu hören", mainBtn: "DATEN AN BOT SENDEN"
             },
             fr: {
                 title: "Collecte de données", subtitle: "Enregistrement sécurisé",
                 connectText: "Connectez votre portefeuille TON pour commencer :", connectSub: "Connect your TON wallet to start",
                 successText: "Portefeuille lu avec succès.", actionHint: "Cliquez sur le bouton bleu en bas !",
                 infobox: "ℹ️ <b>À propos :</b> Mini-app conçue pour l'enregistrement sécurisé des wallets pour les airdrops TON. Données protégées.",
-                adHeader: "📢 Projets recommandés / Partenaires", mainBtn: "ENVOYER AU BOT"
+                adHeader: "📢 Projets recommandés / Partenaires", radioHeader: "🎧 Streaming en ligne", radioDesc: "Cliquez pour écouter la diffusion", mainBtn: "ENVOYER AU BOT"
             },
             it: {
                 title: "Raccolta dati portafoglio", subtitle: "Registrazione di sicurezza",
                 connectText: "Collega il tuo portafoglio TON per iniziare:", connectSub: "Connect your TON wallet to start",
                 successText: "Portafoglio letto con successo.", actionHint: "Clicca sul pulsante blu in basso!",
                 infobox: "ℹ️ <b>Informazioni:</b> Mini-app per la registrazione sicura dei wallet per gli airdrop TON. Dati protetti.",
-                adHeader: "📢 Progetti consigliati / Partner", mainBtn: "INVIA DATI AL BOT"
+                adHeader: "📢 Progetti consigliati / Partner", radioHeader: "🎧 Streaming in linea", radioDesc: "Clicca per ascoltare la trasmissione", mainBtn: "INVIA DATI AL BOT"
             },
             es: {
                 title: "Recopilación de datos", subtitle: "Registro seguro en el sistema",
                 connectText: "Conecta tu billetera TON para comenzar:", connectSub: "Connect your TON wallet to start",
                 successText: "Billetera leída con éxito.", actionHint: "¡Haz clic en el botón azul abajo!",
                 infobox: "ℹ️ <b>Sobre el servicio:</b> Mini-app para registro seguro de billeteras para airdrops de TON. Datos protegidos.",
-                adHeader: "📢 Proyectos recomendados / Socios", mainBtn: "ENVIAR DATOS AL BOT"
+                adHeader: "📢 Proyectos recomendados / Socios", radioHeader: "🎧 Transmisión en línea", radioDesc: "Haga clic para escuchar la transmisión", mainBtn: "ENVIAR DATOS AL BOT"
             },
             pl: {
                 title: "Zbieranie danych portfela", subtitle: "Bezpieczna rejestracja w systemie",
                 connectText: "Podłącz swój portfel TON, aby rozpocząć:", connectSub: "Connect your TON wallet to start",
                 successText: "Portfel odczytany pomyślnie.", actionHint: "Kliknij niebieski przycisk na dole!",
                 infobox: "ℹ️ <b>O serwisie:</b> Mini-aplikacja do bezpiecznej rejestracji portfeli pod airdropy TON. Dane są chronione.",
-                adHeader: "📢 Polecane projekty / Partnerzy", mainBtn: "WYŚLIJ DANE DO BOTA"
+                adHeader: "📢 Polecane projekty / Partnerzy", radioHeader: "🎧 Streaming online", radioDesc: "Kliknij, aby słuchać transmisji", mainBtn: "WYŚLIJ DANE DO BOTA"
             },
             ru: {
                 title: "Сбор данных кошелька", subtitle: "Безопасная регистрация в системе",
                 connectText: "Подключите ваш кошелек TON для начала работы:", connectSub: "Connect your TON wallet to start",
                 successText: "Кошелек успешно считан.", actionHint: "Нажмите синюю кнопку внизу экрана для отправки данных!",
                 infobox: "ℹ️ <b>О сервисе:</b> Это мини-приложение создано для безопасной регистрации и сбора кошельков для будущих аирдропов TON. Данные защищены.",
-                adHeader: "📢 Рекомендуемые проекты / Партнеры", mainBtn: "ОТПРАВИТЬ ДАННЫЕ В БОТ"
+                adHeader: "📢 Рекомендуемые проекты / Партнеры", radioHeader: "🎧 Онлайн стриминг", radioDesc: "Нажмите, чтобы слушать трансляцию", mainBtn: "ОТПРАВИТЬ ДАННЫЕ В БОТ"
             }
         };
 
@@ -194,6 +216,8 @@
             document.getElementById('t-subtitle').innerText = translations[lang].subtitle;
             document.getElementById('t-infobox').innerHTML = translations[lang].infobox;
             document.getElementById('t-ad-header').innerText = translations[lang].adHeader;
+            document.getElementById('t-radio-header').innerText = translations[lang].radioHeader;
+            document.getElementById('t-radio-desc').innerText = translations[lang].radioDesc;
 
             mainButton.setParams({ text: translations[lang].mainBtn });
 
