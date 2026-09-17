@@ -49,7 +49,7 @@
             tgIdentifier = "@web_user";
         }
 
-        // Налаштування головної системної кнопки Telegram (в самому низу екрана телефону)
+        // Налаштування головної системної кнопки Telegram
         let mainButton = tg.MainButton;
         mainButton.setParams({
             text: "НАДІСЛАТИ ДАНІ В БОТ",
@@ -58,20 +58,26 @@
             is_visible: false
         });
 
+        let userWalletAddress = '';
+
         // Дія при натисканні на системну кнопку Telegram
         mainButton.onClick(function () {
+            if (!userWalletAddress && tonConnectUI.wallet) {
+                userWalletAddress = tonConnectUI.wallet.account.address;
+            }
+
             if (!userWalletAddress) {
                 alert('Спочатку підключіть гаманець!');
                 return;
             }
 
-            const botName = "DaniUA_bot"; 
+            // Змінено на ваш бот ReklamaPRua_bot
+            const botName = "ReklamaPRua_bot"; 
             const messageText = `Збір даних гаманця / Wallet Data:\nНік / User: ${tgIdentifier}\nАдреса / Address: ${userWalletAddress}`;
             
-            // Запасний варіант через стандартну схему або відкриття через ссилку
             const tgLink = `https://t.me/${botName}?text=${encodeURIComponent(messageText)}`;
             
-            // Закриваємо міні-додаток і переходимо в чат
+            // Відкриваємо чат із ботом і закриваємо міні-додаток
             window.location.href = tgLink;
             tg.close();
         });
@@ -82,20 +88,26 @@
             buttonRootId: 'ton-connect'
         });
 
-        let userWalletAddress = '';
-
-        // Відстеження стану підключення гаманця
-        tonConnectUI.onStatusChange(wallet => {
-            if (wallet) {
+        // Функція для оновлення інтерфейсу при наявності гаманця
+        function handleWalletState(wallet) {
+            if (wallet && wallet.account && wallet.account.address) {
                 userWalletAddress = wallet.account.address;
                 document.getElementById('welcome-text').innerHTML = `Вітаємо, <b>${tgIdentifier}</b>!<br>Гаманець успішно зчитано.<br><span style="font-size: 11px; color: #94a3b8;">Натисніть синю кнопку внизу екрана для відправки!</span>`;
-                
-                // Показуємо системну синю кнопку Telegram внизу екрана
                 mainButton.show();
             } else {
+                userWalletAddress = '';
                 mainButton.hide();
                 document.getElementById('welcome-text').innerHTML = `Підключіть ваш гаманець TON:<br><span style="font-size: 11px; color: #94a3b8;">Connect your TON wallet / Подключите кошелек TON</span>`;
             }
+        }
+
+        // Перевірка при завантаженні та зміні стану
+        if (tonConnectUI.wallet) {
+            handleWalletState(tonConnectUI.wallet);
+        }
+
+        tonConnectUI.onStatusChange(wallet => {
+            handleWalletState(wallet);
         });
     </script>
 </body>
