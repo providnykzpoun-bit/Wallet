@@ -75,18 +75,27 @@
         <p id="status" style="margin-top: 8px; color: #38bdf8; font-size: 11px;"></p>
     </div>
 
-    <!-- Підключаємо файл з рекламою -->
-    <script src="ads.js"></script>
-
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
 
+        // Повний вбудований список ваших проєктів для ротації
+        const adsList = [
+            { title: "😎 Ecosistem", desc: "Слідкуйте за новими можливостями та сервісами.", url: "https://t.me/Uatetriss_bot" },
+            { title: "😎 UA mining", desc: "Запускайте майнінг улюблених активів у Telegram.", url: "https://t.me/Uapay_bot" },
+            { title: "😎 Тарас", desc: "Інтерактивний бот та цікаві можливості.", url: "https://t.me/Tarasgra_bot" },
+            { title: "😎 5 із 36", desc: "Спробуйте свою вдачу в популярній лотереї!", url: "https://t.me/Lotouabot_bot" },
+            { title: "😎 Боулінг", desc: "Розважальний бот для гарного настрою.", url: "https://t.me/Presbotpress_bot" },
+            { title: "😎 Лотерея UA", desc: "Загадки, розіграші та призи для всіх.", url: "https://t.me/Zagadkiua_bot" },
+            { title: "😎 UA більярд", desc: "Грайте та проводьте час із задоволенням.", url: "https://t.me/Uabilbot_bot" },
+            { title: "😎 Броділка", desc: "Захоплююча текстова бродилка в Telegram.", url: "https://t.me/Brodilkaua_bot" },
+            { title: "😎 Таанчик", desc: "Ігровий бот та приємні бонуси.", url: "https://t.me/Zsudonat_bot" }
+        ];
+
         let currentAdIndex = 0;
 
         function updateAdBanner() {
-            // Перевіряємо, чи масив adsList підключився з файлу ads.js
-            if (typeof adsList !== 'undefined' && adsList.length > 0) {
+            if (adsList && adsList.length > 0) {
                 const ad = adsList[currentAdIndex];
                 document.getElementById('ad-title-text').innerText = ad.title;
                 document.getElementById('ad-desc-text').innerText = ad.desc;
@@ -94,8 +103,9 @@
         }
 
         function openCurrentAd() {
-            if (typeof adsList !== 'undefined' && adsList.length > 0) {
+            if (adsList && adsList.length > 0) {
                 const ad = adsList[currentAdIndex];
+                // Відкриваємо посилання на бота в Telegram
                 if (tg.openTelegramLink) {
                     tg.openTelegramLink(ad.url);
                 } else {
@@ -106,13 +116,11 @@
 
         // Автоматична ротація реклами кожні 4.5 секунди
         setInterval(() => {
-            if (typeof adsList !== 'undefined' && adsList.length > 0) {
-                currentAdIndex = (currentAdIndex + 1) % adsList.length;
-                updateAdBanner();
-            }
+            currentAdIndex = (currentAdIndex + 1) % adsList.length;
+            updateAdBanner();
         }, 4500);
 
-        // Ініціалізація першого банера
+        // Одразу запускаємо відображення першого елемента
         updateAdBanner();
 
         // Переклади мов
